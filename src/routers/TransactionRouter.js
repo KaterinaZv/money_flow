@@ -1,12 +1,22 @@
 import express from 'express';
 import TransactionController from '../controllers/TransactionController.js';
 
-const router = express.Router();
-const transaction = new TransactionController();
+class TransactionRouter {
 
-router.route('/').get(transaction.get);
-router.route('/').post(transaction.create);
-router.route('/:id').put(transaction.update);
-router.route('/:id').delete(transaction.delete);
+    _router = express.Router();
 
-export default router;
+    constructor(pool) {
+        this._transactionRouter = new TransactionController(pool);
+
+        this._router.route('/').get(this._transactionRouter.get);
+        this._router.route('/').post(this._transactionRouter.create);
+        this._router.route('/:id').put(this._transactionRouter.update);
+        this._router.route('/:id').delete(this._transactionRouter.delete);
+    }
+
+    get router() {
+        return this._router;
+    }
+}
+
+export default TransactionRouter;

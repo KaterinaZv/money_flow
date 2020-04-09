@@ -1,47 +1,52 @@
 import process from 'process';
 import express from 'express';
-import user from './routers/UserRouter.js';
-import transaction from './routers/TransactionRouter.js';
-import category from './routers/CategoryRouter.js';
+import UserRouter from './routers/UserRouter.js';
+import TransactionRouter from './routers/TransactionRouter.js';
+import CategoryRouter from './routers/CategoryRouter.js';
 import transactionType from './routers/TransactionTypeRouter.js';
-import categoryPages from './routers/CategoryPages.js';
+import AgentRouter from './routers/AgentRouter.js';
+import BalanceRouter from './routers/BalanceRouter.js';
 import path from 'path';
-
-const __dirname = path.resolve();
-
-import mustacheExpress from 'mustache-express';
-
+import pool from './database.js';
 
 const app = express();
 
-const PORT = process.env.PORT || 
-3000;
+const PORT = process.env.PORT ||
+    3000;
 
-app.use(express.json());
-
-app.engine('mustache', mustacheExpress());
-
-app.set('view engine', 'mustache');
-app.set('views', __dirname + '/views');
-
-app.use('/api/users', user);
-app.use('/api/transactions', transaction);
-app.use('/api/categories', category);
-app.use('/api/transaction/types', transactionType);
-
-app.use('/categories', categoryPages);
-
-
-app.use((error, request, response, next) => {
-    console.log(error.stack);
-    next(error);
-});
-
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
-
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
     console.log(`Server started on port ${server.address().port}`);
+
+    await pool.connect();
+
+    app.use(express.json());
+
+    const userRouter = new UserRouter(pool);
+    app.use('/api/users', userRouter.router);
+
+    const agentRouter = new AgentRouter(pool);
+    app.use('/api/agents', agentRouter.router);
+
+    const transactionRouter = new TransactionRouter(pool);
+    app.use('/api/transactions', transactionRouter.router);
+
+    const categoryRouter = new CategoryRouter(pool);
+    app.use('/api/categories', categoryRouter.router);
+
+    const balanceRouter = new BalanceRouter(pool);
+    app.use('/api/balances', balanceRouter.router);
+
+    app.use('/api/transactiontypes', transactionType);
+
+});
+
+const sigs = ['SIGINT', 'SIGTERM', 'SIGQUIT'];
+sigs.forEach(sig => {
+    process.on(sig, function () {
+        console.log('Server shutdown');
+        server.close(() => {
+            pool.end();
+            process.exit(0)
+        });
+    });
 });
