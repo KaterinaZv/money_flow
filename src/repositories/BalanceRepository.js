@@ -23,6 +23,24 @@ export class BalanceRepository {
         return balances;
     }
 
+    async findBalanceByIdUser({id}) {
+        let balances = [];
+        const rawBalances = await this._pool.query(
+            'SELECT * FROM  public."balance" WHERE agent_id = (SELECT id FROM public."agent" WHERE user_id = $1);'
+            , [id]);
+
+            for (let rawBalance of rawBalances.rows) {
+                let money_status = new Balance({
+                    id: rawBalance.id,
+                    balance: rawBalance.balance,
+                    agent_id: rawBalance.agent_id
+                });
+                balances.push(money_status);
+            }
+
+        return balances;
+    }
+
     async createBalance(balance, agent_id) {
         const rawBalance = await this._pool.query(
             'INSERT INTO public."balance" (balance, agent_id) VALUES ($1, $2) RETURNING *;'

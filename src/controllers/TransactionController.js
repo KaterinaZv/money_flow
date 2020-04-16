@@ -1,5 +1,6 @@
 
 import { TransactionRepository } from '../repositories/TransactionRepository.js';
+import { BalanceRepository } from '../repositories/BalanceRepository.js';
 class TransactionController {
 
   constructor(pool) {
@@ -9,10 +10,12 @@ class TransactionController {
     this.delete = this.delete.bind(this);
 
     this.transactionRepository = new TransactionRepository(pool);
+    this.balanceRepository = new BalanceRepository(pool);
   }
 
   async get(request, response, next) {
-    response.json(await this.transactionRepository.getAllTransactions());
+    const id = request.body.id;
+    response.json(await this.transactionRepository.getAllTransactions({id}));
   }
 
   async create(request, response, next) {
@@ -26,8 +29,11 @@ class TransactionController {
 
     const transaction = await this.transactionRepository.createTransaction(count, source_agent_id, destination_agent_id, date, category_id, transaction_type);
 
+    await this.balanceRepository.createBalance(transaction.count, source_agent_id);
+
     response.send(transaction);
   }
+
 
   async update(request, response, next) {
     const id = Number(request.params.id);

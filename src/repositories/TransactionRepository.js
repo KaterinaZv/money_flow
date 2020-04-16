@@ -6,10 +6,10 @@ export class TransactionRepository {
         this._pool = pool;
     }
 
-    async getAllTransactions() {
+    async getAllTransactions({id}) {
         let transactions = [];
 
-        const rawTransactions = await this._pool.query('SELECT * FROM public."transaction";');
+        const rawTransactions = await this._pool.query('SELECT * FROM  public."transaction" WHERE source_agent_id = (SELECT id FROM public."agent" WHERE user_id = $1) OR destination_agent_id = (SELECT id FROM public."agent" WHERE user_id = $1);', [id]);
 
         for (let rawTransaction of rawTransactions.rows) {
             let transaction = new Transaction({
@@ -26,6 +26,7 @@ export class TransactionRepository {
 
         return transactions;
     }
+
 
     async createTransaction(count, source_agent_id, destination_agent_id, date, category_id, transaction_type) {
         const rawTransaction = await this._pool.query(
