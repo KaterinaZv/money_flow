@@ -1,74 +1,72 @@
-import Transaction from '../models/Transaction.js';
-
-export class TransactionRepository {
-
+class TransactionRepository {
     constructor(pool) {
         this._pool = pool;
     }
 
-    async getAllTransactions({id}) {
-        let transactions = [];
+    async createTransaction(user, agentName, count, categoryId, transactionType) {
+        let sourceRawAgentId = await this._pool.query('SELECT id FROM public.agent WHERE user_id=$1;', [user.id]);
 
-        const rawTransactions = await this._pool.query('SELECT * FROM  public."transaction" WHERE source_agent_id = (SELECT id FROM public."agent" WHERE user_id = $1) OR destination_agent_id = (SELECT id FROM public."agent" WHERE user_id = $1);', [id]);
-
-        for (let rawTransaction of rawTransactions.rows) {
-            let transaction = new Transaction({
-                id  : rawTransaction.id,
-                count: rawTransaction.count,
-                source_agent_id: rawTransaction.source_agent_id,
-                destination_agent_id: rawTransaction.destination_agent_id,
-                date: rawTransaction.date,
-                category_id: rawTransaction.category_id,
-                transaction_type: rawTransaction.transaction_type
-            });
-            transactions.push(transaction);
+        let destinationAgentId;
+        destinationAgentId = await this._pool.query('SELECT id FROM public.agent WHERE name=$1;', [agentName]);
+        if (destinationAgentId.rows.length === 0) {
+            destinationAgentId = await this._pool.query(
+                'INSERT INTO public.agent (name) VALUES ($1) RETURNING *;',
+                [agentName],
+            );
         }
 
-        return transactions;
+        sourceRawAgentId = sourceRawAgentId.rows[0].id;
+        destinationAgentId = destinationAgentId.rows[0].id;
+
+        const createdRawTransaction = await this._pool.query('INSERT INTO public.transaction (source_agent_id, destination_agent_id, count, category_id, transaction_type) VALUES ($1, $2, $3, $4, $5) RETURNING *', [
+            sourceRawAgentId,
+            destinationAgentId,
+            count,
+            categoryId,
+            transactionType,
+        ]);
+
+        const rawTransaction = await this._pool.query('SELECT tr.id, s.name as source_agent_name, d.name as destination_agent_name, tr.count, tr.date, tr.transaction_type, c.name as category_name FROM public.transaction tr inner join agent s on tr.source_agent_id = s.id inner join agent d on tr.destination_agent_id = d.id inner join category c on tr.category_id = c.id WHERE tr.id=$1;', [createdRawTransaction.rows[0].id]);
+
+        return rawTransaction.rows[0];
     }
 
+    async getTransactionByParams(userId, params) {
+        const rawAgentId = await this._pool.query('SELECT id FROM public.agent WHERE user_id=$1;', [userId]);
+        const agentId = rawAgentId.rows[0].id;
 
-    async createTransaction(count, source_agent_id, destination_agent_id, date, category_id, transaction_type) {
-        const rawTransaction = await this._pool.query(
-            'INSERT INTO public."transaction" (count, source_agent_id, destination_agent_id, date, category_id, transaction_type ) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;'
-        , [count, source_agent_id, destination_agent_id, date, category_id, transaction_type]);
+        let query = 'SELECT tr.id, s.name as source_agent_name, d.name as destination_agent_name, tr.count, tr.date, tr.transaction_type, c.name as category_name FROM public.transaction tr inner join agent s on tr.source_agent_id = s.id inner join agent d on tr.destination_agent_id = d.id inner join category c on tr.category_id = c.id WHERE (source_agent_id=$1 OR destination_agent_id=$1)';
+        const queryParam = [agentId];
 
-        let transaction = new Transaction({
-            id  : rawTransaction.rows[0].id,
-            count: rawTransaction.rows[0].count,
-            source_agent_id: rawTransaction.rows[0].source_agent_id,
-            destination_agent_id: rawTransaction.rows[0].destination_agent_id,
-            date: rawTransaction.rows[0].date,
-            category_id: rawTransaction.rows[0].category_id,
-            transaction_type: rawTransaction.rows[0].transaction_type
-
-        });
-
-        return transaction;
-    }
-
-    async updateTransaction({id, count}) {
-        const rawTransaction = await this._pool.query('UPDATE public."transaction" SET count=$2 WHERE id=$1 RETURNING *;', [id, count]);
-
-        if (rawTransaction.rows.length === 0) {
-            throw Error('Error on update transaction');
+        if (params.date !== undefined) {
+            queryParam.push(params.date);
+            query = `${query} AND date=$${queryParam.length}`;
+        } else {
+            // eslint-disable-next-line no-param-reassign
+            params.date = {};
         }
 
-        let transaction = new Transaction({
-            id  : rawTransaction.rows[0].id,
-            count: rawTransaction.rows[0].count
-        });
-
-        return transaction;
-    }
-
-    async deleteTransaction(id) {
-        const result = await this._pool.query('DELETE FROM public."transaction" WHERE id=$1 RETURNING *;', [id]);
-
-        if (result.rows.length === 0) {
-            throw Error('Error on delete transaction');
+        if (params.limit !== undefined) {
+            queryParam.push(Number(params.limit));
+            query = `${query} LIMIT $${queryParam.length}`;
+        } else {
+            // eslint-disable-next-line no-param-reassign
+            params.limit = {};
         }
 
-        console.log(result);
+        if (params.offset !== undefined) {
+            queryParam.push(Number(params.offset));
+            query = `${query} OFFSET $${queryParam.length}`;
+        } else {
+            // eslint-disable-next-line no-param-reassign
+            params.offset = {};
+        }
+
+        // eslint-disable-next-line max-len
+        const rawTransactions = await this._pool.query(query, queryParam);
+
+        return rawTransactions.rows;
     }
 }
+
+export default TransactionRepository;

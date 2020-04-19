@@ -1,11 +1,11 @@
-import process         from 'process';
-import express         from 'express';
-import TransactionRouter  from './routers/TransactionRouter.js';
+import process        from 'process';
+import express        from 'express';
+import io from 'socket.io';
+import path from 'path';
 import CategoryRouter from './routers/CategoryRouter.js';
-import pool            from './database.js';
-import UserRouter from "./routers/UserRouter.js";
-import auth  from './security/auth.js';
-import BalanceRouter from './routers/BalanceRouter.js';
+import pool           from './database.js';
+import UserRouter     from './routers/UserRouter.js';
+import auth           from './security/auth.js';
 
 const app = express();
 
@@ -17,24 +17,27 @@ const server = app.listen(PORT, async () => {
     await pool.connect();
 
     app.use(express.json());
-    app.use(express.raw())
+    app.use(express.raw());
 
-    const transactionRouter = new TransactionRouter(pool);
-    app.use('/api/transactions', auth, transactionRouter.router);
+    const __dirname = path.resolve();
+    app.use(express.static(path.join(__dirname, './public')));
 
     const userRouter = new UserRouter(pool);
     app.use('/api/users', userRouter.router);
 
-
     const categoryRouter = new CategoryRouter(pool);
     app.use('/api/categories', auth, categoryRouter.router);
 
-    const balanceRouter = new BalanceRouter(pool);
-    app.use('/api/balances', auth, balanceRouter.router);
-
-    app.use((error, request, response, next) => {
+    app.use((error, request, response) => {
         console.log(error.stack);
         response.status(500).send(error.message);
     });
+});
 
+const socketServer = io.listen(server);
+
+socketServer.on('connection', (socket) => {
+    socket.broadcast.emit('showMessage', { name: 'Anonymous', message: 'A NEW USER HAS JOINED' });
+
+    socket.on('sendMessage', (message) => socketServer.emit('showMessage', message));
 });
