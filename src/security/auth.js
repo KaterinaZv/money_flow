@@ -10,7 +10,7 @@ class Security {
                 const token = request.headers.authorization.split(' ')[1];
                 const decoded = await jwt.decode(token);
                 const user = await userRepository.findByEmailAndId(decoded.id, decoded.email);
-                if (user !== null && await jwt.verify(token, user.password) !== null) {
+                if (user !== null) {
                     request.user = user;
                     next();
                 } else {
