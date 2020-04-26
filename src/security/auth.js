@@ -25,4 +25,5 @@ class Security {
         }
     }
 }
+
 export default Security;

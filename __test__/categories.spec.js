@@ -1,3 +1,4 @@
+
 import express from 'express';
 import request from 'supertest';
 import CategoryRouter from '../src/routers/CategoryRouter.js';
@@ -40,6 +41,9 @@ describe('test categories route', () => {
         });
         user._password = '$2a$10$Ou3rcS76Iv32lbxnQ61nu.7IM4Jx6liagoTP6mLle8upfb60wU6j6';
 
+        CategoryRepository.mockImplementation(() => ({
+            getAllCategories: () => [1],
+        }));
 
         UserRepository.mockImplementation(() => ({
             findByEmailAndId: () => user,
@@ -64,8 +68,12 @@ describe('test categories route', () => {
                     return formData;
                 },
             };
-        });
 
+        user._password = '$2a$10$wOim5rfkQD2g.s3vq9JJEet6vTSbkq0X7c1FzFDMEipJShLXip2rG';
+
+        UserRepository.mockImplementation(() => ({
+            findByEmailAndId: () => user,
+        }));
 
         const categoryRouter = new CategoryRouter(pool);
 
@@ -117,4 +125,5 @@ describe('test categories route', () => {
            expect(response).toBe('ok');
        });
       */
-});
+
+    });
