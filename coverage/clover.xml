@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1587213918885" clover="3.2.0">
-  <project timestamp="1587213918885" name="All files">
-    <metrics statements="90" coveredstatements="19" conditionals="12" coveredconditionals="1" methods="33" coveredmethods="5" elements="135" coveredelements="25" complexity="0" loc="90" ncloc="90" packages="6" files="8" classes="8"/>
+<coverage generated="1587751047013" clover="3.2.0">
+  <project timestamp="1587751047013" name="All files">
+    <metrics statements="93" coveredstatements="21" conditionals="12" coveredconditionals="0" methods="33" coveredmethods="5" elements="138" coveredelements="26" complexity="0" loc="93" ncloc="93" packages="6" files="8" classes="8"/>
     <package name="src">
       <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="database.js" path="/Users/katya/Documents/js/bot_moneyflow/money_flow/src/database.js">
+      <file name="database.js" path="/Users/katya/Documents/js/money_flow/src/database.js">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="3" count="1" type="stmt"/>
       </file>
     </package>
     <package name="src.controllers">
       <metrics statements="20" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="1"/>
-      <file name="CategoryController.js" path="/Users/katya/Documents/js/bot_moneyflow/money_flow/src/controllers/CategoryController.js">
+      <file name="CategoryController.js" path="/Users/katya/Documents/js/money_flow/src/controllers/CategoryController.js">
         <metrics statements="20" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="1"/>
-        <line num="5" count="2" type="stmt"/>
-        <line num="6" count="2" type="stmt"/>
-        <line num="7" count="2" type="stmt"/>
-        <line num="8" count="2" type="stmt"/>
-        <line num="10" count="2" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
         <line num="14" count="0" type="stmt"/>
         <line num="18" count="0" type="stmt"/>
         <line num="20" count="0" type="stmt"/>
@@ -36,21 +36,21 @@
       </file>
     </package>
     <package name="src.models">
-      <metrics statements="16" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="13" coveredmethods="0"/>
-      <file name="Category.js" path="/Users/katya/Documents/js/bot_moneyflow/money_flow/src/models/Category.js">
-        <metrics statements="6" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="0"/>
-        <line num="3" count="0" type="stmt"/>
-        <line num="4" count="0" type="stmt"/>
+      <metrics statements="16" coveredstatements="5" conditionals="2" coveredconditionals="0" methods="13" coveredmethods="2"/>
+      <file name="Category.js" path="/Users/katya/Documents/js/money_flow/src/models/Category.js">
+        <metrics statements="6" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="1"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
         <line num="8" count="0" type="stmt"/>
         <line num="12" count="0" type="stmt"/>
         <line num="16" count="0" type="stmt"/>
         <line num="20" count="0" type="stmt"/>
       </file>
-      <file name="User.js" path="/Users/katya/Documents/js/bot_moneyflow/money_flow/src/models/User.js">
-        <metrics statements="10" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="8" coveredmethods="0"/>
-        <line num="3" count="0" type="stmt"/>
-        <line num="4" count="0" type="stmt"/>
-        <line num="5" count="0" type="stmt"/>
+      <file name="User.js" path="/Users/katya/Documents/js/money_flow/src/models/User.js">
+        <metrics statements="10" coveredstatements="3" conditionals="2" coveredconditionals="0" methods="8" coveredmethods="1"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
         <line num="9" count="0" type="stmt"/>
         <line num="13" count="0" type="stmt"/>
         <line num="17" count="0" type="stmt"/>
@@ -61,8 +61,8 @@
       </file>
     </package>
     <package name="src.repositories">
-      <metrics statements="33" coveredstatements="1" conditionals="4" coveredconditionals="0" methods="12" coveredmethods="1"/>
-      <file name="CategoryRepository.js" path="/Users/katya/Documents/js/bot_moneyflow/money_flow/src/repositories/CategoryRepository.js">
+      <metrics statements="33" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="12" coveredmethods="0"/>
+      <file name="CategoryRepository.js" path="/Users/katya/Documents/js/money_flow/src/repositories/CategoryRepository.js">
         <metrics statements="17" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="6" coveredmethods="0"/>
         <line num="5" count="0" type="stmt"/>
         <line num="9" count="0" type="stmt"/>
@@ -82,9 +82,9 @@
         <line num="53" count="0" type="stmt"/>
         <line num="56" count="0" type="stmt"/>
       </file>
-      <file name="UserRepository.js" path="/Users/katya/Documents/js/bot_moneyflow/money_flow/src/repositories/UserRepository.js">
-        <metrics statements="16" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="1"/>
-        <line num="5" count="1" type="stmt"/>
+      <file name="UserRepository.js" path="/Users/katya/Documents/js/money_flow/src/repositories/UserRepository.js">
+        <metrics statements="16" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="0"/>
+        <line num="5" count="0" type="stmt"/>
         <line num="9" count="0" type="stmt"/>
         <line num="14" count="0" type="stmt"/>
         <line num="22" count="0" type="stmt"/>
@@ -103,35 +103,38 @@
       </file>
     </package>
     <package name="src.routers">
-      <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-      <file name="CategoryRouter.js" path="/Users/katya/Documents/js/bot_moneyflow/money_flow/src/routers/CategoryRouter.js">
-        <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-        <line num="7" count="2" type="stmt"/>
-        <line num="9" count="2" type="stmt"/>
-        <line num="11" count="2" type="stmt"/>
-        <line num="12" count="2" type="stmt"/>
-        <line num="13" count="2" type="stmt"/>
-        <line num="15" count="2" type="stmt"/>
-        <line num="16" count="2" type="stmt"/>
-        <line num="17" count="2" type="stmt"/>
-        <line num="21" count="2" type="stmt"/>
+      <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+      <file name="CategoryRouter.js" path="/Users/katya/Documents/js/money_flow/src/routers/CategoryRouter.js">
+        <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
       </file>
     </package>
     <package name="src.security">
-      <metrics statements="11" coveredstatements="3" conditionals="6" coveredconditionals="1" methods="1" coveredmethods="1"/>
-      <file name="auth.js" path="/Users/katya/Documents/js/bot_moneyflow/money_flow/src/security/auth.js">
-        <metrics statements="11" coveredstatements="3" conditionals="6" coveredconditionals="1" methods="1" coveredmethods="1"/>
-        <line num="5" count="1" type="stmt"/>
-        <line num="8" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="9" count="0" type="stmt"/>
+      <metrics statements="13" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="auth.js" path="/Users/katya/Documents/js/money_flow/src/security/auth.js">
+        <metrics statements="13" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="7" count="0" type="stmt"/>
+        <line num="8" count="0" type="stmt"/>
+        <line num="9" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="10" count="0" type="stmt"/>
         <line num="11" count="0" type="stmt"/>
-        <line num="13" count="0" type="stmt"/>
-        <line num="18" count="0" type="cond" truecount="0" falsecount="4"/>
-        <line num="19" count="0" type="stmt"/>
+        <line num="12" count="0" type="stmt"/>
+        <line num="13" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="15" count="0" type="stmt"/>
+        <line num="17" count="0" type="stmt"/>
         <line num="20" count="0" type="stmt"/>
-        <line num="22" count="0" type="stmt"/>
+        <line num="23" count="0" type="stmt"/>
         <line num="24" count="0" type="stmt"/>
-        <line num="27" count="2" type="stmt"/>
       </file>
     </package>
   </project>

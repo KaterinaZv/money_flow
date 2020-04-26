@@ -28,7 +28,7 @@ const server = app.listen(PORT, async () => {
     const categoryRouter = new CategoryRouter(pool);
     app.use('/api/categories', auth, categoryRouter.router);
 
-    app.use((error, request, response) => {
+    app.use((error, request, response, next) => {
         console.log(error.stack);
         response.status(500).send(error.message);
     });

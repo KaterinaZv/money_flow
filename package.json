@@ -4,7 +4,7 @@
   "description": "Study project for web courses",
   "main": "server.js",
   "scripts": {
-    "start": "node ./src/server.js",
+    "start": "node server.js",
     "eslint": "eslint src/**/*.js",
     "test": "jest --coverage"
   },
@@ -39,7 +39,7 @@
     "eslint-config-airbnb-base": "14.1.0",
     "eslint-plugin-import": "2.20.2",
     "husky": "4.2.5",
-    "jest": "^25.3.0"
+    "jest": "^25.4.0"
   },
   "husky": {
     "hooks": {
