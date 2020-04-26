@@ -19,19 +19,19 @@ const server = app.listen(PORT, async () => {
     app.use(express.json());
     app.use(express.raw());
 
-    const __dirname = path.resolve();
-    app.use(express.static(path.join(__dirname, './public')));
-
     const userRouter = new UserRouter(pool);
     app.use('/api/users', userRouter.router);
 
     const categoryRouter = new CategoryRouter(pool);
     app.use('/api/categories', auth, categoryRouter.router);
 
-    app.use((error, request, response, next) => {
+    app.use((error, request, response) => {
         console.log(error.stack);
         response.status(500).send(error.message);
     });
+
+    // const __dirname = path.resolve();
+    // app.use(express.static(path.join(__dirname, './public')));
 });
 
 const socketServer = io.listen(server);

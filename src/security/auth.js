@@ -10,18 +10,18 @@ class Security {
                 const token = request.headers.authorization.split(' ')[1];
                 const decoded = await jwt.decode(token);
                 const user = await userRepository.findByEmailAndId(decoded.id, decoded.email);
-                if (user !== null) {
+                if (user !== null && await jwt.verify(token, user.password) !== null) {
                     request.user = user;
                     next();
                 } else {
-                    next(new Error('Invalid auth data'));
+                    response.status(500).send('Invalid auth data');
                 }
             } else {
-                next(new Error('Invalid auth data'));
+                response.status(500).send('Invalid auth data');
             }
         } catch (e) {
             console.log(e);
-            next(new Error('Invalid auth data'));
+            response.status(500).send('Invalid auth data');
         }
     }
 }

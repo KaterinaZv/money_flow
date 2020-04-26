@@ -5,6 +5,6 @@ migration/
 docker-compose.yml
 Dockerfile
 build.sh
-idea/
+.idea/
 coverage/
 users.spec.js
