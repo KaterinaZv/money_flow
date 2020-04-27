@@ -1,67 +1,72 @@
 import User from '../models/User.js';
 
-export class UserRepository {
-
+class UserRepository {
     constructor(pool) {
         this._pool = pool;
     }
 
-    async getAllUsers() {
-        let users = [];
+    async save({ email, name, password }) {
+        const userRawData = await this._pool.query(
+            'INSERT INTO public."user" (email, name, password) VALUES ($1, $2, $3) RETURNING *;',
+            [email, name, password],
+        );
 
-        const rawUsers = await this._pool.query('SELECT * FROM public."user";');
-
-        for (let rawUser of rawUsers.rows) {
-            let user = new User({
-                id  : rawUser.id,
-                name: rawUser.name,
-                email: rawUser.email
-            });
-            users.push(user);
-        }
-
-        return users;
+        return new User({
+            id: userRawData.rows[0].id,
+            name: userRawData.rows[0].name,
+            email: userRawData.rows[0].email,
+        });
     }
 
-    async createUser(name, email, password) {
-        const rawUser = await this._pool.query(
-            'INSERT INTO public."user" (name, email, password) VALUES ($1, $2, $3) RETURNING *;'
-        , [name, email, password]);
+    async findByEmail({ email }) {
+        const userRawData = await this._pool.query(
+            'SELECT * FROM public."user" where email=$1;',
+            [email],
+        );
 
-        let user = new User({
-            id  : rawUser.rows[0].id,
-            name: rawUser.rows[0].name,
-            email: rawUser.rows[0].email,
-            password: rawUser.rows[0].password,
+        const user = new User({
+            id: userRawData.rows[0].id,
+            name: userRawData.rows[0].name,
+            email: userRawData.rows[0].email,
         });
+        user._password = userRawData.rows[0].password;
 
         return user;
     }
 
-    async updateUser({id, name, email, password}) {
-        const rawUser = await this._pool.query('UPDATE public."user" SET name=$2, email=$3, password=$4 WHERE id=$1 RETURNING *;', [id, name, email, password]);
+    async findByEmailAndId({ id, email }) {
+        const userRawData = await this._pool.query(
+            'SELECT * FROM public."user" where id=$1 AND email=$2;',
+            [id, email],
+        );
 
-        if (rawUser.rows.length === 0) {
-            throw Error('Error on update user');
-        }
-
-        let user = new User({
-            id  : rawUser.rows[0].id,
-            name: rawUser.rows[0].name,
-            email: rawUser.rows[0].email,
-            password: rawUser.rows[0].password
+        const user = new User({
+            id: userRawData.rows[0].id,
+            name: userRawData.rows[0].name,
+            email: userRawData.rows[0].email,
         });
+        user._password = userRawData.rows[0].password;
 
         return user;
     }
 
-    async deleteUser(id) {
-        const result = await this._pool.query('DELETE FROM public."user" WHERE id=$1 RETURNING *;', [id]);
+    async getUserBalance(userId) {
+        const rawAgentId = await this._pool.query('SELECT id FROM public.agent WHERE user_id=$1;', [userId]);
 
-        if (result.rows.length === 0) {
-            throw Error('Error on delete user');
-        }
+        const balanceRawData = await this._pool.query('SELECT income, outgoing FROM (SELECT SUM("transaction_incoming".count::money::numeric::float8) FROM (SELECT * FROM public.transaction WHERE (source_agent_id=$1 OR destination_agent_id=$1) AND transaction_type=\'incoming\') as "transaction_incoming") AS "income"(income), (SELECT SUM("transaction_outgoing".count::money::numeric::float8) FROM (SELECT * FROM public.transaction WHERE (source_agent_id=$1 OR destination_agent_id=$1) AND transaction_type=\'outgoing\') as "transaction_outgoing") AS "outgoing"(outgoing);', [rawAgentId.rows[0].id]);
 
-        console.log(result);
+        return balanceRawData.rows[0].income - balanceRawData.rows[0].outgoing;
+    }
+
+    async update(user, { name }) {
+        const userRawData = await this._pool.query('UPDATE public."user" SET name=$2 WHERE id=$1 RETURNING *;', [user.id, name]);
+
+        return new User({
+            id: userRawData.rows[0].id,
+            name: userRawData.rows[0].name,
+            email: userRawData.rows[0].email,
+        });
     }
 }
+
+export default UserRepository;

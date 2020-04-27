@@ -1,48 +1,49 @@
 import Category from '../models/Category.js';
 
-export class CategoryRepository {
-
+class CategoryRepository {
     constructor(pool) {
         this._pool = pool;
     }
 
     async getAllCategories() {
-        let categories = [];
+        const categories = [];
 
         const rawCategories = await this._pool.query('SELECT * FROM public."category";');
 
-        for (let rawCategory of rawCategories.rows) {
-            let category = new Category({
+        rawCategories.rows.forEach((rawCategory) => {
+            const category = new Category({
                 id: rawCategory.id,
-                name: rawCategory.name
+                name: rawCategory.name,
             });
             categories.push(category);
-        }
+        });
+
         return categories;
     }
 
     async createCategory(name) {
-        const rawCategory = await this._pool.query('INSERT INTO public."category" (name) VALUE ($1) RETURNING *;', [name]);
+        const rawCategory = await this._pool.query(
+            'INSERT INTO public."category" (name) VALUES ($1) RETURNING *;',
+            [name],
+        );
 
-        let category = new Category({
+        return new Category({
             id: rawCategory.rows[0].id,
-            name: rawCategory.rows[0].name
+            name: rawCategory.rows[0].name,
         });
-        return category;
     }
 
-    async updateCategory({id, name}) {
-        const rawCategory = await this._pool.query('UPDATE public."category" SET name=$2 WHERE id=$1 RETURNING *;', [id, name]);
+    async updateCategory({ id, name }) {
+        const rawCategory = await this._pool.query('UPDATE public.category SET name=$2 WHERE id=$1 RETURNING *;', [id, name]);
 
         if (rawCategory.rows.length === 0) {
             throw Error('Error on update category');
         }
 
-        let category = new Category({
+        return new Category({
             id: rawCategory.rows[0].id,
-            name: rawCategory.rows[0].name
+            name: rawCategory.rows[0].name,
         });
-        return category;
     }
 
     async deleteCategory(id) {
@@ -51,8 +52,9 @@ export class CategoryRepository {
         if (result.rows.length === 0) {
             throw Error('Error on delete category');
         }
+
         console.log(result);
     }
-
 }
 
+export default CategoryRepository;

@@ -1,1 +1,10 @@
 node_modules/
+<<<<<<< HEAD
+dist/
+migration/
+docker-compose.yml
+Dockerfile
+build.sh
+.idea/
+coverage/
+users.spec.js
